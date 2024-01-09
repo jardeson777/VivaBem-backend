@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  first_name String
+  last_name String
+  password  String
+  birthday  DateTime
+  gender    String
+  weight    Float
+  height    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  medicines Medicine[]
+  medicalAppointments MedicalAppointment[]
+  bloodPressures BloodPressure[]
+
+  @@map("users")
+}
+
+model Medicine {
+  id        Int      @id @default(autoincrement())
+  name      String
+  dosage    String
+  color     String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  hoursTakeMedicine HoursTakeMedicine[]
+  daysTakeMedicine DaysTakeMedicine[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("medicines")
+}
+
+model HoursTakeMedicine {
+  id        Int      @id @default(autoincrement())
+  hour      String
+  medicine  Medicine @relation(fields: [medicineId], references: [id])
+  medicineId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("hours_take_medicine")
+}
+
+model DaysTakeMedicine {
+  id        Int      @id @default(autoincrement())
+  day       String
+  medicine  Medicine @relation(fields: [medicineId], references: [id])
+  medicineId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("days_take_medicine")
+}
+
+model MedicalAppointment {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  doctor_name    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  exam      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("medical_appointments")
+}
+
+model BloodPressure {
+  id        Int      @id @default(autoincrement())
+  systolic  Int
+  diastolic Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blood_pressures")
+}

@@ -1,10 +1,15 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { SignUpInput } from './dto/sign-up.dto';
+import { SignUpInput } from './dtos/sign-up.dto';
 import { UserService } from '../user/user.service';
+import { AuthService } from './services/auth.service';
+import { AuthenticateInput } from './dtos/authenticate-input.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly userService: UserService) {
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService,
+  ) {
     //
   }
 
@@ -14,7 +19,10 @@ export class AuthController {
   }
 
   @Post('login')
-  create() {
-    // return this.authService.login();
+  create(@Body() authenticateInput: AuthenticateInput) {
+    return this.authService.authenticate(
+      authenticateInput.email,
+      authenticateInput.password,
+    );
   }
 }

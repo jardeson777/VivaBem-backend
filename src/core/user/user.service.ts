@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.dto';
 import { User } from './domain/user.entity';
 import { UserRepository } from './user.repository';
+import { PasswordService } from '../auth/services/password.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly passwordService: PasswordService,
+  ) {
     //
   }
 
@@ -14,7 +18,7 @@ export class UserService {
       input.email,
       input.firstName,
       input.lastName,
-      input.password,
+      await this.passwordService.hashPassword(input.password),
       input.birthday,
       input.gender,
       input.weight,
@@ -22,5 +26,9 @@ export class UserService {
     );
 
     return this.userRepository.save(user);
+  }
+
+  async findByEmail(email: string) {
+    return this.userRepository.findByEmail(email);
   }
 }

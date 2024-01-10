@@ -17,7 +17,7 @@ model User {
   last_name String
   password  String
   birthday  DateTime
-  gender    String
+  gender    Gender
   weight    Float
   height    Float
   createdAt DateTime @default(now())
@@ -90,4 +90,9 @@ model BloodPressure {
   updatedAt DateTime @updatedAt
 
   @@map("blood_pressures")
+}
+
+enum Gender {
+  Male
+  Female
 }
